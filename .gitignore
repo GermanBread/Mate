@@ -1,0 +1,10 @@
+.vscode/
+bin/
+build/
+obj/
+data/*
+assets/*
+
+# This one contains some commands I'd rather not share with the world...
+# Don't worry! It's just one file and the bot will still compile!
+private FunModule.cs

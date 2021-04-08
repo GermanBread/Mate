@@ -1,0 +1,270 @@
+body {
+    margin: 0;
+    
+    background-color: black;
+    background-image: url('sources/rainbow\ forest.jpg');
+    background-size: 200%;
+    background-position-y: 70%;
+
+    scroll-behavior: smooth;
+
+    overflow: hidden;
+}
+
+#content-mount {
+    height: calc(90vh - 20px);
+    
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.background {
+    padding: 10%;
+
+    background-attachment: fixed;
+    background-size: cover;
+}
+.poly {
+    background-image: url('sources/floating\ rocks.jpg');
+}
+.poly2 {
+    background-image: url('sources/floating\ stones.jpg');
+}
+
+.botname {
+    font-size: 4vh;
+    font-family: Helvetica;
+    color: rgb(180, 225, 255);
+    font-weight: 700;
+    
+    height: 5vh;
+    padding: 5px;
+    
+    background-color: rgb(38, 46, 54, 0.4);
+    backdrop-filter: blur(5px);
+    
+    border-bottom: 1vh solid rgb(51, 64, 77);
+}
+.icon {
+    border-radius: 50%;
+    width: 5vh;
+    height: 5vh;
+    margin-right: 5px;
+}
+
+.credits {
+    font-size: 100%;
+    font-family: Helvetica;
+    color: rgba(180, 225, 255);
+    font-weight: 700;
+
+    height: 3vh;
+    padding: 5px;
+    margin: 0px;
+    
+    background-color: rgb(38, 46, 54, 0.4);
+    backdrop-filter: blur(5px);
+
+    border-top: 1vh solid rgb(51, 64, 77);
+}
+
+.title {
+    color: rgb(225, 239, 255);
+    font-size: 100px;
+    font-family: monospace;
+    text-decoration: underline;
+    font-weight: 900;
+
+    margin: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    
+    width: 7ch;
+    overflow-x: hidden;
+    white-space: nowrap;
+
+    border-right: 5px solid rgba(225, 239, 255, 0.5);
+    padding-right: 10px;
+
+    animation: typing 1s steps(7), blinking .5s 1s step-end infinite alternate;
+}
+.control-panel {
+    width: 13ch;
+    
+    animation: typing 1s steps(13), blinking .5s 1s step-end infinite alternate;
+}
+.logs {
+    width: 4ch;
+    
+    animation: typing 1s steps(4), blinking .5s 1s step-end infinite alternate;
+}
+@keyframes typing {
+    from {
+        width: 0;
+    }
+}
+@keyframes blinking {
+    50% {
+        border-right-color: transparent;
+    }
+}
+
+.jump {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    
+    text-align: center;
+    
+    animation: updown 1s infinite ease-in-out alternate-reverse forwards;
+}
+@keyframes updown {
+    0% {
+        padding-top: 5px;
+        padding-bottom: 10px;
+    }
+    100% {
+        padding-top: 10px;
+        padding-bottom: 5px;
+    }
+}
+.hint {
+    color: rgb(225, 239, 255);
+    font-size: 25px;
+    font-family: monospace;
+    font-weight: 400;
+    
+    margin: 0;
+}
+
+.button {
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    
+    padding: 15px;
+    
+    display: flex;
+    
+    border-left: 0px solid white;
+    border-radius: 0px 15px 15px 0px;
+
+    transition: border .5s ease-out, padding-left .5s ease-out, background-color .5s ease-out;
+}
+.button:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+    
+    padding-left: 25px;
+
+    border-left-width: 10px;
+}
+.red {
+    border-left-color: red;
+    background-color: rgba(255, 100, 100, 0.4);
+
+    animation: red-blink 1s step-end infinite alternate;
+}
+.red:hover {
+    background-color: rgba(255, 100, 100, 0.6);
+}
+.deactivated {
+    opacity: 0.75;
+}
+.label {
+    color: rgb(225, 239, 255);
+    font-size: 50px;
+    font-family: monospace;
+    font-weight: 400;
+    text-decoration: underline;
+
+    text-shadow: 1px 1px rgba(78, 78, 78, 0.1);
+
+    margin: 0;
+}
+@keyframes red-blink {
+    50% {
+        border-left-color: rgb(180, 0, 0);
+    }
+}
+
+#log-mount {
+    background-color: rgba(150, 150, 150, 0.5);
+    backdrop-filter: blur(15px);
+    
+    padding: 2%;
+    
+    overflow: auto;
+
+    border-radius: 15px;
+}
+.log-entry {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+
+    display: flex;
+    text-align: center;
+
+    flex-wrap: wrap;
+    
+    color: rgb(225, 239, 255);
+    font-size: 20px;
+    font-family: monospace;
+    font-weight: 400;
+    
+    margin-top: 0;
+    margin-bottom: 5px;
+    padding: 5px;
+    padding-left: 10px;
+
+    transition: padding-left .5s ease-out;
+}
+.log-error {
+    color: red;
+
+    font-weight: 600;
+    
+    animation: red-blink-text 2s ease-in-out infinite;
+}
+.log-entry:hover {
+    padding-left: 20px;
+}
+.log-severity-verbose, .log-severity-debug {
+    color: rgb(192, 192, 192);
+}
+.log-severity-info {
+    color: white;
+}
+.log-severity-warn {
+    color: yellow;
+
+    font-weight: 500;
+}
+.log-severity-error, .log-severity-critical {
+    color: red;
+
+    font-weight: 600;
+    
+    animation: red-blink-text 1s step-end infinite alternate;
+}
+@keyframes red-blink-text {
+    50% {
+        color: rgb(180, 0, 0);
+    }
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+    background: rgb(51, 64, 77);
+}
+::-webkit-scrollbar-thumb {
+    background: rgb(100, 100, 100);
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(150, 150, 150);
+}

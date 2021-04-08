@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Control panel</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <a class="botname" style="display: flex;" href="index.html"><img class="icon" src="%PFPLINK">%BOTNAME Dashboard</a>
+    <main id="content-mount">
+      <div class="background poly">
+        <h1 class="title control-panel">Control panel</h1>
+        <div style="margin-top: 50px;"></div>
+        <div class="jump">
+          <h2 class="hint">Scroll down</h2>
+        </div>
+        <div style="margin-top: calc(75vh - 210px);"></div>
+      </div>
+      <div style="padding-top: 50px; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px);"></div>
+      <div class="background poly2">
+        <a id="stopbutton" class="button red" onclick="stopbot()">
+          <h1 class="label">Gracefully stop the bot</h1>
+        </a>
+        <div style="padding-top: 50px;"></div>
+        <a id="killbutton" class="button red" onclick="killbot()" style="animation-delay: .5s;">
+          <h1 class="label">Forcefully stop the bot</h1>
+        </a>
+        <div style="padding-top: 50px;"></div>
+      </div>
+    </main>
+    <footer class="credits">Made by GermanBread#9077</footer>
+  </body>
+</html>
