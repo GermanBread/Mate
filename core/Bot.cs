@@ -22,7 +22,7 @@ namespace Mate.Core
     {
         // Startup:
         // Init = Called after the core bot has initialized
-        // Run = Called after the client fires the "ready" event ::: WARNING: This event can be fired more than once
+        // Run = Called after the client fires the "ready" event
         // Shutdown:
         // Stop = Called before guild profiles get saved
         // Note:
@@ -109,10 +109,6 @@ The configuration for this guild hasn't been deleted and the bot will behave lik
                 await Client.SetActivityAsync(new Game("GermanBread#9077", ActivityType.Watching, ActivityProperties.None));
                 await Task.Delay(5000, statusUpdaterToken);
                 await Client.SetActivityAsync(new Game($"ping: {Client.Latency}ms", ActivityType.Watching, ActivityProperties.None));
-                await Task.Delay(5000, statusUpdaterToken);
-                var _uptimeSpan = TimeSpan.FromMilliseconds(GlobalVariables.Uptime);
-                string _uptimeString = $"{Math.Truncate(_uptimeSpan.TotalDays)} days, {_uptimeSpan.Hours} hours, {_uptimeSpan.Minutes} minutes";
-                await Client.SetActivityAsync(new Game($"uptime: {_uptimeString}", ActivityType.Watching, ActivityProperties.None));
                 await Task.Delay(5000, statusUpdaterToken);
                 await Client.SetActivityAsync(new Game($"out for \"<\"", ActivityType.Watching, ActivityProperties.None));
                 await Task.Delay(5000, statusUpdaterToken);
