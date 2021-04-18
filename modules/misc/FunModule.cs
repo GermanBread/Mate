@@ -34,10 +34,12 @@ namespace Mate.Modules
         }
         [Command("astronomia")]
         [Alias("astro")]
+        [Summary("Astronimia remix")]
         public async Task Astronomia() {
             await ReplyAsync("https://cdn.discordapp.com/attachments/729787119886663800/819628336136978482/dans.webm");
         }
         [Command("pinged")]
+        [Summary("So you got pinged on Discord, eh?")]
         public async Task Pinged() {
             await ReplyAsync("https://cdn.discordapp.com/attachments/729216637504585790/824618225881841704/A_sad_strange_little_man_-_discord_Ping-1354512342122430467.mp4");
         }

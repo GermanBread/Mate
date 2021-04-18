@@ -27,7 +27,7 @@ namespace Mate.Variables
                 // If it does not, create one!
                 EmbedBuilder builder = new EmbedBuilder {
                     Title = "List of commands",
-                    Description = GenerateCommandField(User.GuildPermissions.ToList(), Context),
+                    Description = generateCommandField(User.GuildPermissions.ToList(), Context),
                     Color = Color.Teal
                 };
                 Embed built = builder.Build();
@@ -45,7 +45,7 @@ namespace Mate.Variables
                 return EmbedCache[User.GuildPermissions];
             }
 
-            string GenerateCommandField(List<GuildPermission> Permissions, ContextType Context) {
+            string generateCommandField(List<GuildPermission> Permissions, ContextType Context) {
                 var _commands = new List<CommandInfo>();
                 List<ModuleInfo> _modules = new List<ModuleInfo>();
 
@@ -127,25 +127,25 @@ namespace Mate.Variables
                 
                 
                 // Add all commands in order
-                string generated = "";
-                string lastModuleName = "";
+                string _generatedField = "";
+                string _lastModuleName = "";
                 _commands.Where(command
                  => !string.IsNullOrEmpty(command.Name) && string.IsNullOrEmpty(command.Module.Group)).ToList().ForEach(command
                      => {
-                        string commandParameters = "";
-                        string commandAliases = "";
+                        string _commandParameters = "";
+                        string _commandAliases = "";
 
                         // Add the command aprameters to the string
                         command.Parameters.ToList().ForEach(parameter
-                         => commandParameters += $" [{(parameter.IsOptional ? "(optional) " : "")}{parameter.Name}]");
+                         => _commandParameters += $" [{(parameter.IsOptional ? "(optional) " : "")}{parameter.Name}]");
 
                         command.Aliases.Where(alias => alias != command.Name).ToList().ForEach(alias
-                         => commandAliases += $" \"{alias}\"");
+                         => _commandAliases += $" \"{alias}\"");
                         
                         // Now add the description
                         var guild = User.Guild;
-                        if (lastModuleName != command.Module.Name && !command.Module.IsSubmodule) {
-                            generated += $"\n__**{command.Module.Name}**__\n";
+                        if (_lastModuleName != command.Module.Name && !command.Module.IsSubmodule) {
+                            _generatedField += $"\n__**{command.Module.Name}**__\n";
                             
                             string moduleAliases = "";
 
@@ -159,26 +159,26 @@ namespace Mate.Variables
                                             module.Aliases.Where(alias => alias != module.Name).ToList().ForEach(alias
                                              => moduleAliases += $" \"{alias}\"");
 
-                                            generated += $"**{module.Name}**"
+                                            _generatedField += $"**{module.Name}**"
                                                  + (!string.IsNullOrEmpty(moduleAliases) ? $" *Aliases:{moduleAliases}*\n" : "\n")
                                                      + (!string.IsNullOrEmpty(module.Summary) ? $"{module.Summary}\n" : "No description provided\n")
                                                          + (!string.IsNullOrEmpty(module.Remarks) ? $"Remarks: {module.Remarks}\n" : "");
                                 }
                             );
                         }
-                        generated += $"**{command.Name}**"
-                         +  (!string.IsNullOrEmpty(commandAliases) ? $" *Aliases:{commandAliases}*\n" : "\n")
+                        _generatedField += $"**{command.Name}**"
+                         +  (!string.IsNullOrEmpty(_commandAliases) ? $" *Aliases:{_commandAliases}*\n" : "\n")
                              + (!string.IsNullOrEmpty(command.Summary) ? $"{command.Summary}\n" : "No description provided\n")
-                                 + (!string.IsNullOrEmpty(commandParameters) ? $"Usage: `{command.Name}" + commandParameters + "`\n" : "")
+                                 + (!string.IsNullOrEmpty(_commandParameters) ? $"Usage: `{command.Name}" + _commandParameters + "`\n" : "")
                                      + (!string.IsNullOrEmpty(command.Remarks) ? $"Remarks: {command.Remarks}\n" : "");
 
                         // Set the modules' name
-                        lastModuleName = command.Module.Name;
+                        _lastModuleName = command.Module.Name;
                     }
                 );
                 
                 // Return the string and let the main function create the embed
-                return generated;
+                return _generatedField;
             }
         }
     }
