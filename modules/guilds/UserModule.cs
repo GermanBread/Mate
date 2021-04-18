@@ -36,6 +36,14 @@ namespace Mate.Modules
             await ReplyAsync($"{Context.User.Mention} Pong!\n{Context.Client.Latency}ms latency");
         }
 
+        [Alias("inv", "bot invite")]
+        [Command("invite")]
+        public async Task SendBotInvite() {
+            await ReplyAsync("You got mail!");
+            var _dm = await Context.User.GetOrCreateDMChannelAsync();
+            await _dm.SendMessageAsync("Here is the invite for this bot [https://discord.com/oauth2/authorize?client_id=797478563568812074&scope=bot]");
+        }
+
         /*[Command("wget")]
         [Summary("Compile a list of URLs for x images in this channel")]
         public async Task CreateWgetList(int limit) {

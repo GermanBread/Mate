@@ -87,15 +87,6 @@ namespace Mate.Modules
             await _dm.SendMessageAsync("Here is the invite to the support server [https://discord.gg/tQ7hbAds4w]");
         }
 
-        // TODO: Move to UserModule.cs
-        [RequireUserPermission(GuildPermission.Administrator, ErrorMessage = "You are not an administrator")]
-        [Alias("inv", "bot invite")]
-        [Command("invite")]
-        public async Task SendBotInvite() {
-            await ReplyAsync("You got mail!");
-            var _dm = await Context.User.GetOrCreateDMChannelAsync();
-            await _dm.SendMessageAsync("Here is the invite for this bot [https://discord.com/oauth2/authorize?client_id=797478563568812074&scope=bot]");
-        }
 
         /*public sealed class UserManagementModule : ModuleBase<SocketCommandContext> {
 

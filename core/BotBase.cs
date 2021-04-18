@@ -33,7 +33,7 @@ namespace Mate.Core
         /// <summary>
         /// Starts the bot.
         /// </summary>
-        public async Task Start() {
+        public async Task Start() {           
             await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", $"Initializing variables"));
             await InitVariables();
 
