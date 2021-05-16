@@ -69,8 +69,9 @@ namespace Mate.Utility
             // Create the directory if it does not exist.
             Directory.CreateDirectory(jsonPath);
             
-            // Check if the dirty indicator exists.
             string fileExtension = ".json";
+            
+            // Check if the dirty indicator exists.
             // If that's the case, append a ~ to the file extension
             if (File.Exists(Path.Join(jsonPath, "primary dirty"))) {
                 fileExtension = ".json~";
@@ -78,8 +79,9 @@ namespace Mate.Utility
             }
 
             // Get a list of all files in the profiles folder and filter them
-            foreach (var jsonFile in Directory.GetFiles(jsonPath)
-                .Where(file => file.EndsWith(fileExtension)))
+            var _jsonFiles = Directory.GetFiles(jsonPath)
+                .Where(file => file.EndsWith(fileExtension));
+            foreach (var jsonFile in _jsonFiles)
             {
                 try {
                     // Try reading the JSON
@@ -88,8 +90,9 @@ namespace Mate.Utility
                 } catch (Exception) {
                     // If the above fails, try a backup file instead
                     try {
+                        await Logger.Log(new LogMessage(LogSeverity.Warning, "Profile manager", "File in primary bank seemed to be corrupt; loading backup instead..."));
                         var data = JsonSerializer.Deserialize<GuildProfile>(File.ReadAllText(jsonFile + "~"));
-                    GuildProfiles.Add(data.GuildId, data.GuildVars);
+                        GuildProfiles.Add(data.GuildId, data.GuildVars);
                     } catch (Exception ex) {
                         // If that fails, throw an error and continue
                         await Logger.Log(new LogMessage(LogSeverity.Error, "Profile manager", "Failed to load guild profile!", ex));
