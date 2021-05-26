@@ -26,30 +26,31 @@ namespace Mate.Core
             //await Command.AddModulesAsync(Assembly.GetEntryAssembly(), Service);
             
             // Guilds
-            await Command.AddModuleAsync(typeof(UserGuildModule), Service);
-            await Command.AddModuleAsync(typeof(AdminGuildModule), Service);
-            await Command.AddModuleAsync(typeof(FunModule), Service);
+            await Command.AddModuleAsync<UserGuildModule>(Service);
+            await Command.AddModuleAsync<AdminGuildModule>(Service);
+            await Command.AddModuleAsync<FunModule>(Service);
 
             // DMs
-            await Command.AddModuleAsync(typeof(UserDMModule), Service);
+            await Command.AddModuleAsync<UserDMModule>(Service);
             
             // Debugging
-            await Command.AddModuleAsync(typeof(DebugModule), Service);
+            await Command.AddModuleAsync<DebugModule>(Service);
 
             //await Logger.Log(new LogMessage(LogSeverity.Warning, "Command loader", "Creating commands from file"));
 
-            if (Command.Commands.Count() == 0) await Logger.Log(new LogMessage(LogSeverity.Warning, "Command loader", "No commands have been found"));
+            if (!Command.Commands.Any()) await Logger.Log(new LogMessage(LogSeverity.Warning, "Command loader", "No commands have been found"));
             else if (Command.Commands.Count() == 1) await Logger.Log(new LogMessage(LogSeverity.Info, "Command loader", "1 command has been loaded"));
             else await Logger.Log(new LogMessage(LogSeverity.Info, "Command loader", $"{Command.Commands.Count()} commands have been loaded"));
         }
 
         private async Task HandleCommands(SocketMessage message) {
-            SocketUserMessage _message = message as SocketUserMessage; // Convert the argument
+            if (message is not SocketUserMessage _message)
+                return;
             if (_message == null) return; // Exit if the message is a system message
             if (_message.Author.IsBot) return; // Exit if the message is from a bot
             if (_message.Author.IsWebhook) return; // Exit if the message is from a webhook
 
-            SocketCommandContext context = new SocketCommandContext(Client, _message);
+            SocketCommandContext context = new(Client, _message);
 
             int _pos = 0;
             string prefix;
@@ -65,7 +66,7 @@ namespace Mate.Core
             }
             if (_message.HasStringPrefix(prefix, ref _pos)) {
                 // Exit if it's a mention (those start with <), and because we're dealing with a substring, we don't need to check for <
-                string _substr = _message.Content.Substring(_pos);
+                string _substr = _message.Content[_pos..];
                 if (_substr.StartsWith("@")
                  || _substr.StartsWith("#")
                   || _substr.StartsWith(":")
@@ -85,7 +86,7 @@ namespace Mate.Core
                 
                 
                 // Post-execution handling
-                await Logger.Log(new LogMessage(LogSeverity.Info, "Command handler", $"Executed \"{_message.Content.Substring(_pos)}\" for user {context.User}"));
+                await Logger.Log(new LogMessage(LogSeverity.Info, "Command handler", $"Executed \"{_message.Content[_pos..]}\" for user {context.User}"));
                 if (_result.IsSuccess) return;
                 else await Logger.Log(new LogMessage(LogSeverity.Warning, "Command handler", $"Previous command errored with reason \"{_result.ErrorReason}\""));
                 

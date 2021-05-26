@@ -80,8 +80,8 @@ namespace Mate.Utility
                     break;
             }
             // Log the message
-            string buffer = new string(' ', 4 - (int)Math.Ceiling(log.Severity.ToString().Length / 2f));
-            string buffer2 = new string(' ', 4 - (int)Math.Floor(log.Severity.ToString().Length / 2f));
+            string buffer = new(' ', 4 - (int)Math.Ceiling(log.Severity.ToString().Length / 2f));
+            string buffer2 = new(' ', 4 - (int)Math.Floor(log.Severity.ToString().Length / 2f));
 
             // Wait until the last print is done
             while (isPrintingToConsole);

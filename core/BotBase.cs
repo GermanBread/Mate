@@ -22,12 +22,12 @@ namespace Mate.Core
         public DiscordSocketClient Client { get; protected set; }
         public CommandService Command;
         protected IServiceProvider Service = null;
-        private CancellationTokenSource BotCancelTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource BotCancelTokenSource = new();
         private CancellationToken BotCancelToken;
-        private CancellationTokenSource BackupCancelTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource BackupCancelTokenSource = new();
         private CancellationToken BackupCancelToken;
         // We assume that the child classes will contain a "Run" and "Stop" method
-        private MethodBase[] ChildMethods = typeof(Bot).GetRuntimeMethods().ToArray();
+        private readonly MethodBase[] ChildMethods = typeof(Bot).GetRuntimeMethods().ToArray();
         private bool IsMakingBackup = false;
         
         /// <summary>
@@ -83,6 +83,14 @@ namespace Mate.Core
             }
         }
 
+        /// <summary>
+        /// Reboots the bot. DO NOT AWAIT!
+        /// </summary>
+        public async Task Reboot() {
+            GlobalVariables.Rebooting = true;
+            await Task.Delay(0);
+            _ = Quit();
+        }
         /// <summary>
         /// Stops the bot. DO NOT AWAIT!
         /// </summary>

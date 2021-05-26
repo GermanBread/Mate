@@ -25,7 +25,7 @@ namespace Mate.Variables
                 Logger.Log(new LogMessage(LogSeverity.Info, "Cache", $"Creating new help cache for user {User}, permission mask: {User.GuildPermissions}"));
                 
                 // If it does not, create one!
-                EmbedBuilder builder = new EmbedBuilder {
+                EmbedBuilder builder = new() {
                     Title = "List of commands",
                     Description = generateCommandField(User.GuildPermissions.ToList(), Context),
                     Color = Color.Teal
@@ -47,7 +47,7 @@ namespace Mate.Variables
 
             string generateCommandField(List<GuildPermission> Permissions, ContextType Context) {
                 var _commands = new List<CommandInfo>();
-                List<ModuleInfo> _modules = new List<ModuleInfo>();
+                List<ModuleInfo> _modules = new();
 
                 GlobalVariables.DiscordBot.Command.Commands.ToList().ForEach(command
                  => {
@@ -61,7 +61,7 @@ namespace Mate.Variables
                     if (!string.IsNullOrEmpty(command.Module.Group)) return;
                     
                     // Exit if the command is only executable by the owner of the bot
-                    if (command.Module.Preconditions.OfType<RequireOwnerAttribute>().Count() > 0) return;
+                    if (command.Module.Preconditions.OfType<RequireOwnerAttribute>().Any()) return;
 
                     // We need to check whether or not this command can run in this context.
                     var contextAttributes = command.Module.Preconditions.OfType<RequireContextAttribute>();
@@ -75,7 +75,7 @@ namespace Mate.Variables
 
                     // Now we can go check the permissions.
                     // If the command has no permission attributes, add it
-                    if (permissionAttributes.Count() == 0) _commands.Add(command);
+                    if (!permissionAttributes.Any()) _commands.Add(command);
                     
                     // if the permissions match, add the command.
                     if (permissionAttributes.Any(attribute
@@ -87,7 +87,7 @@ namespace Mate.Variables
                 GlobalVariables.DiscordBot.Command.Modules.ToList().ForEach(module
                  => {
                     // Check if the command is only executable by the owner of the bot
-                    if (module.Preconditions.OfType<RequireOwnerAttribute>().Count() > 0) return;
+                    if (!module.Preconditions.OfType<RequireOwnerAttribute>().Any()) return;
                     
                     // Check if this command can be run inside a guild.
                     // We need to check whether or not this command can run in this context.
@@ -102,9 +102,7 @@ namespace Mate.Variables
                     var permissionAttributes = module.Preconditions.OfType<RequireUserPermissionAttribute>();
 
                     // Check if attributes were found.
-                    try {
-                        permissionAttributes.First();
-                    } catch {
+                    if (permissionAttributes.Any()) {
                         // If the permissions parameter is null, add this command to the list
                         if (Permissions == null) _modules.Add(module);
                         else return;

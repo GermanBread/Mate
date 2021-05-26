@@ -131,7 +131,7 @@ namespace Mate.Utility
             /// </summary>
             [JsonIgnore]
             public KeyValuePair<ulong, GuildVariables> GuildPair { 
-                get => new KeyValuePair<ulong, GuildVariables>(GuildId, GuildVars);
+                get => new(GuildId, GuildVars);
                 set { GuildId = value.Key; GuildVars = value.Value; }
             }
         }

@@ -27,13 +27,13 @@ namespace Mate.Modules
             var _typing = Context.Channel.EnterTypingState();
 
             // Build an embed
-            EmbedBuilder _embed = new EmbedBuilder {
+            EmbedBuilder _embed = new() {
                 Title = "Command list\nRun these without a prefix i.e. `help` instead of `<help`",
                 Color = Color.Teal
             };
             
             // Commands for everyone
-            List<string> commands = new List<string> {
+            List<string> commands = new() {
                 "`help` - Shows this menu",
             };
             
@@ -54,7 +54,7 @@ namespace Mate.Modules
         }
         [Command("close")]
         [Summary("Closes the DM with the bot")]
-        public async Task closedm() {
+        public async Task CloseDM() {
             await Context.User.GetOrCreateDMChannelAsync().Result.CloseAsync();
         }
     }

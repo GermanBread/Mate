@@ -20,14 +20,14 @@ namespace Mate.Extra
 {
     public sealed class Webserver
     {
-        private CancellationTokenSource tokenSource;
-        private CancellationToken cancelToken;
-        private HttpListener webListener;
-        private int port;
-        private string[] domainNames;
-        private string htmlBaseDir = GlobalVariables.HtmlPath;
+        private readonly CancellationTokenSource tokenSource;
+        private readonly CancellationToken cancelToken;
+        private readonly HttpListener webListener;
+        private readonly int port;
+        private readonly string[] domainNames;
+        private readonly string htmlBaseDir = GlobalVariables.HtmlPath;
         // Credit: https://gist.github.com/aksakalli/9191056
-        private IDictionary<string, string> mimeTypeMappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase) {
+        private readonly IDictionary<string, string> mimeTypeMappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase) {
         #region extension to MIME type list
         {".asf", "video/x-ms-asf"},
         {".asx", "video/x-ms-asf"},
@@ -114,8 +114,8 @@ namespace Mate.Extra
             webListener.Start();
             for (int i = 0; i < domainNames.Length; i++)
             {
-                webListener.Prefixes.Add($"http://{domainNames[i]}:{port.ToString()}/");
-                await Logger.Log(new LogMessage(LogSeverity.Info, "Webserver", $"Adding url \"http://{domainNames[i]}:{port.ToString()}/\""));
+                webListener.Prefixes.Add($"http://{domainNames[i]}:{port}/");
+                await Logger.Log(new LogMessage(LogSeverity.Info, "Webserver", $"Adding url \"http://{domainNames[i]}:{port}/\""));
             }
             await Logger.Log(new LogMessage(LogSeverity.Info, "Webserver", "Ready, visit one of the urls listed to visit the dashboard"));
             while (!cancelToken.IsCancellationRequested) {
@@ -162,7 +162,7 @@ namespace Mate.Extra
             string responseString = "";
             try {
                 // Every extension in this list will be read as text
-                List<string> webFiles = new List<string> {
+                List<string> webFiles = new() {
                     ".css", ".html", ".js"
                 };
                 
@@ -171,7 +171,7 @@ namespace Mate.Extra
                 
                 // Remove the preceeding directory character
                 try {
-                    if (htmlDirectory[0] == '/') htmlDirectory = htmlDirectory.Substring(1);
+                    if (htmlDirectory[0] == '/') htmlDirectory = htmlDirectory[1..];
                 } catch (NullReferenceException) {
                     htmlDirectory = "";
                 }
@@ -238,15 +238,12 @@ namespace Mate.Extra
             response.Close();
         }
         
-        private void HandleAPIConnection(HttpListenerContext context) {
-            // Get the underlying request
-            HttpListenerRequest request = context.Request;
-
+        private static void HandleAPIConnection(HttpListenerContext context) {
             // Obtain a response object
             HttpListenerResponse response = context.Response;
 
             // Construct a response.
-            string responseString = "";
+            string responseString;
             try {
                 responseString = context.HandleRequest();
                 response.StatusCode = 200;

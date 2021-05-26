@@ -20,7 +20,7 @@ namespace Mate.Extra
     {
         public CancellationTokenSource ctx { get; private set; }
         public List<MethodInfo> consoleCommands { get; private set; }
-        private List<string> commandHistory = new List<string>();
+        private readonly List<string> commandHistory = new();
         private int commandIndex = -1;
         public bool isAlive = false;
         
@@ -36,7 +36,7 @@ namespace Mate.Extra
         /// <summary>
         /// Uses the list provided in the GlobalVariables class to filter inbuilt methods
         /// </summary>
-        private List<MethodInfo> GetStaticMethodsByBlacklist(Type reflectedType)
+        private static List<MethodInfo> GetStaticMethodsByBlacklist(Type reflectedType)
          => reflectedType.GetMethods().Where(method
              => !GlobalVariables.GenericMethodNames.Contains(method.Name) & method.IsStatic).ToList();
 

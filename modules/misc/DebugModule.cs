@@ -46,17 +46,16 @@ namespace Mate.Modules
                 await ReplyAsync("Done");
             });
         }
-        [Command("pleh")]
-        public async Task ShowHelpAsOwner() {
-            // Pretend that this command is being run by the owner
-            await ReplyAsync(embed: Cache.GetOrGenerateHelpEmbed(Context.Guild.Owner, ContextType.Guild));
-        }
         [Command("stop")]
         public async Task StopBot() {
             var _stopmsg = await ReplyAsync("<a:windows_loading:755873787807006872> Stopping");
             _ = GlobalVariables.DiscordBot.Quit();
-            _ = _stopmsg.DeleteAsync();
-            await Task.Delay(0);
+            _ = _stopmsg.ModifyAsync(x => x.Content = "✅ Stopped");
+        }
+        [Command("restart")]
+        public async Task RestartBot() {
+            await ReplyAsync("<a:windows_loading:755873787807006872> Rebooting");
+            _ = GlobalVariables.DiscordBot.Reboot();
         }
     }
 }

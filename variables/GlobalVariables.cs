@@ -21,7 +21,7 @@ namespace Mate.Variables {
         /// A collection of generic method names. Can be used as a blacklist when using reflection.
         /// </summary>
         /// <value></value>
-        public static List<string> GenericMethodNames { get => new List<string> {
+        public static List<string> GenericMethodNames { get => new() {
             "ToString",
             "Equals",
             "GetHashCode",
@@ -94,6 +94,14 @@ namespace Mate.Variables {
         /// <value>True WHILE the bot is shutting down (also set to true while the bot is in the shutdown phase during reboot). False after shutdown succeeded. 
         /// If the bot wasn't shut down properly this value indicates a "dirty" shutdown (by having the value true)</value>
         public static bool ShuttingDown { get; set; } = false;
+        /// <summary>
+        /// Whether or not the bot is set to reboot.
+        /// </summary>
+        public static bool Rebooting { get; set; } = false;
+        /// <summary>
+        /// The message that should be edited after the bot rebooted
+        /// </summary>
+        public static ulong MessageDeleteOnBoot { get; set; } = 0;
         /// <summary>
         /// Whether or not the bot has started up. This variable is used to prevent the "ready" event from triggering the start() method twice.
         /// </summary>

@@ -21,7 +21,7 @@ namespace Mate.Modules
     [Name("Commands that everyone can run")]
     public class UserGuildModule : ModuleBase<SocketCommandContext>
     {
-        public List<Task> tasks = new List<Task>();
+        public List<Task> tasks = new();
         
         [Command("help", true)]
         [Summary("Shows this menu")]

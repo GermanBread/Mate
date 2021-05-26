@@ -54,6 +54,11 @@ namespace Mate.Extra
             "Stopping bot".WriteLine(ConsoleColor.Yellow);
             _ = GlobalVariables.DiscordBot.Quit();
         }
+        [Summary("Reboots the bot")]
+        public static void Reboot() {
+            "Rebooting bot".WriteLine(ConsoleColor.Yellow);
+            _ = GlobalVariables.DiscordBot.Reboot();
+        }
         [Summary("Stops the bot in an instant, bypasses every measure to perform a clean shutdown.")]
         public static void Abort() {
             "Killing bot".WriteLine(ConsoleColor.Yellow);

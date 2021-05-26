@@ -29,7 +29,7 @@ namespace Mate.Modules
         public sealed class ConfigurationModule : ModuleBase<SocketCommandContext> {
             [Command]
             public async Task ChangeSettings() {
-                EmbedBuilder _helpEmbed = new EmbedBuilder {
+                EmbedBuilder _helpEmbed = new() {
                     Title = "Usage",
                     Fields = new List<EmbedFieldBuilder> {
                         new EmbedFieldBuilder {

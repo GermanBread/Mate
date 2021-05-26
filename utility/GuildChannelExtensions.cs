@@ -10,7 +10,7 @@ namespace Mate.Utility {
     public static class GuildChannelExtensions
     {
         public static async Task SendActionLog(this SocketGuild Guild, string Message, Color EmbedColor) {
-            EmbedBuilder _logEmbed = new EmbedBuilder {
+            EmbedBuilder _logEmbed = new() {
                 Title = $"Log - {DateTime.UtcNow.ToShortDateString()}:{DateTime.UtcNow.ToShortTimeString()}",
                 Description = Message,
                 Color = EmbedColor

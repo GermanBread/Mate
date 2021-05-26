@@ -4,7 +4,7 @@ namespace Mate.Utility
 {
     public struct ExtendedLogMessage
     {
-        public static ExtendedLogMessage Empty { get => new ExtendedLogMessage(); }
+        public static ExtendedLogMessage Empty { get => new(); }
         public LogMessage Message { get; set; }
         public LogAttributes? Attributes { get; set; }
         public ExtendedLogMessage(LogMessage log, LogAttributes? attributes) {

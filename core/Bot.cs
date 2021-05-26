@@ -42,7 +42,7 @@ namespace Mate.Core
                 "localhost"
             }, 8080);
             // *ahem* Because this was blocking the main thread from starting, the GC should take care of that eventually...
-            new TaskFactory().StartNew(() => server.StartAsync());
+            Task.Run(() => server.StartAsync());
 
             Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Subscribing events"));
             Client.JoinedGuild += HandleGuildJoin;
@@ -112,6 +112,8 @@ The configuration for this guild hasn't been deleted and the bot will behave lik
                 await Task.Delay(5000, statusUpdaterToken);
                 await Client.SetActivityAsync(new Game($"out for \"<\"", ActivityType.Watching, ActivityProperties.None));
                 await Task.Delay(5000, statusUpdaterToken);
+
+                GC.Collect();
             }
         }
     }

@@ -16,7 +16,7 @@ using Mate.Variables;
     // Start the stopwatch
     GlobalVariables.Bootwatch.Start();
 
-    string[] bootParameters = Environment.GetCommandLineArgs();
+    string[] bootParameters = args;
 
     // Splash
     "Discord bot-init by ".Write(ConsoleColor.DarkCyan);
@@ -62,11 +62,22 @@ using Mate.Variables;
         GlobalVariables.Bootwatch.Start();
     }
 
+    if (bootParameters.Contains("r"))
+        if (bootParameters.Length > Array.IndexOf(bootParameters, "r") + 2)
+            if (ulong.TryParse(bootParameters[Array.IndexOf(bootParameters, "r") + 1], out ulong msgID))
+                GlobalVariables.MessageDeleteOnBoot = msgID;
+                // TODO: complete implementation
+
     initDataDirectory();
 
     try {
         // Start the bot
         await GlobalVariables.DiscordBot.Start();
+
+        if (GlobalVariables.Rebooting) {
+            await Logger.Log(new LogMessage(LogSeverity.Info, "Reboot", $"Handing off control to new instance"));
+            System.Diagnostics.Process.Start(Path.Combine(AppContext.BaseDirectory, "Mate"));
+        }
     }
     catch (Exception ex) {
         await Logger.Log(new LogMessage(LogSeverity.Critical, "Crash", "The bot crashed!", ex));
@@ -82,7 +93,7 @@ using Mate.Variables;
     }
     void createLog() {
         string logFileDate = DateTime.UtcNow.ToShortDateString().Replace('/', '-') /* had to add this because else the log saving process crashes */;
-        StreamWriter _logwriter = new StreamWriter(GlobalVariables.LogFilePath.Replace("%D", logFileDate), true);
+        StreamWriter _logwriter = new(GlobalVariables.LogFilePath.Replace("%D", logFileDate), true);
         _logwriter.WriteLine($"Logfile created on {DateTime.UtcNow}");
         foreach (var element in GlobalVariables.Logs)
         {
