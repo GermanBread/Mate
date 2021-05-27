@@ -62,12 +62,6 @@ using Mate.Variables;
         GlobalVariables.Bootwatch.Start();
     }
 
-    if (bootParameters.Contains("r"))
-        if (bootParameters.Length > Array.IndexOf(bootParameters, "r") + 2)
-            if (ulong.TryParse(bootParameters[Array.IndexOf(bootParameters, "r") + 1], out ulong msgID))
-                GlobalVariables.MessageDeleteOnBoot = msgID;
-                // TODO: complete implementation
-
     initDataDirectory();
 
     try {

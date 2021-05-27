@@ -99,10 +99,6 @@ namespace Mate.Variables {
         /// </summary>
         public static bool Rebooting { get; set; } = false;
         /// <summary>
-        /// The message that should be edited after the bot rebooted
-        /// </summary>
-        public static ulong MessageDeleteOnBoot { get; set; } = 0;
-        /// <summary>
         /// Whether or not the bot has started up. This variable is used to prevent the "ready" event from triggering the start() method twice.
         /// </summary>
         /// <value>True if startup completed. False if otherwise.</value>
