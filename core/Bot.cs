@@ -71,6 +71,12 @@ namespace Mate.Core
                     }
                 }
             });
+
+            // Start a task that restarts the bot (prevents OOM)
+            Task.Run(() => {
+                Thread.Sleep(TimeSpan.FromDays(1));
+                _ = Reboot();
+            });
         }
         void Stop() {
             Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Unsubscribing events"));
