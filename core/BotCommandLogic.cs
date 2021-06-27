@@ -93,9 +93,9 @@ namespace Mate.Core
                 switch (_result.Error)
                 {
                     case CommandError.UnknownCommand:
-                        await _message.Channel.SendMessageAsync($"This command does not exist");
-                        await _message.Channel.SendMessageAsync("https://tenor.com/view/bruh-moai-intense-transitions-reddit-chungus-gif-20326848");
-                        await _message.Channel.SendMessageAsync($"`{prefix}help` exists y'know?");
+                        //await _message.Channel.SendMessageAsync($"This command does not exist");
+                        //await _message.Channel.SendMessageAsync("https://tenor.com/view/bruh-moai-intense-transitions-reddit-chungus-gif-20326848");
+                        //await _message.Channel.SendMessageAsync($"`{prefix}help` exists y'know?");
                         break;
                     case CommandError.BadArgCount:
                         await _message.Channel.SendMessageAsync(_result.ErrorReason.Replace(" text", null));
