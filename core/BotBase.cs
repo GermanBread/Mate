@@ -56,7 +56,7 @@ namespace Mate.Core
             await InvokeChildMethod("Init");
 
             CancellationTokenSource _cts = new();
-            _ = Task.Delay(TimeSpan.FromMinutes(1), _cts.Token).ContinueWith((prev) => {
+            _ = Task.Delay(TimeSpan.FromMinutes(5), _cts.Token).ContinueWith((prev) => {
                 if (prev.IsCanceled) return;
                 Logger.Log(new LogMessage(LogSeverity.Warning, "Watchdog", "Discord refused to let us log in. Rebooting NOW!"));
                 _ = Reboot();
