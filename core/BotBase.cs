@@ -53,17 +53,27 @@ namespace Mate.Core
             await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", $"Downloading memberlists"));
             await Client.DownloadUsersAsync(Client.Guilds);
 
-            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", $"Starting backup task"));
-            _ = PeriodicBackupTask(2);
-
             await InvokeChildMethod("Init");
+
+            CancellationTokenSource _cts = new();
+            _ = Task.Delay(TimeSpan.FromMinutes(1), _cts.Token).ContinueWith((prev) => {
+                if (prev.IsCanceled) return;
+                Logger.Log(new LogMessage(LogSeverity.Warning, "Watchdog", "Discord refused to let us log in. Rebooting NOW!"));
+                _ = Reboot();
+            });
 
             // As soon as the client signals ready, we complete the init process
             Client.Ready += () => {
                 // To prevent this method from firing the invoke again
                 if (GlobalVariables.StartupComplete) return Task.CompletedTask;
                 GlobalVariables.StartupComplete = true;
+
+                Logger.Log(new LogMessage(LogSeverity.Info, "Login event", $"Stopping watchdog"));
+                _cts.Cancel();
                 
+                Logger.Log(new LogMessage(LogSeverity.Info, "Login event", $"Starting backup task"));
+                _ = PeriodicBackupTask(2);
+
                 // Call the run method from children
                 InvokeChildMethod("Run").Wait();
 

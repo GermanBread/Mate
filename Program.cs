@@ -68,10 +68,11 @@ using Mate.Variables;
         // Start the bot
         await GlobalVariables.DiscordBot.Start();
 
-        if (GlobalVariables.Rebooting) {
+        // Done by using a shell script
+        /*if (GlobalVariables.Rebooting) {
             await Logger.Log(new LogMessage(LogSeverity.Info, "Reboot", $"Handing off control to new instance"));
             System.Diagnostics.Process.Start(Path.Combine(AppContext.BaseDirectory, "Mate"));
-        }
+        }*/
     }
     catch (Exception ex) {
         await Logger.Log(new LogMessage(LogSeverity.Critical, "Crash", "The bot crashed!", ex));
@@ -99,4 +100,6 @@ using Mate.Variables;
 
         Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", $"Log saved"));
     }
+
+    Environment.Exit(GlobalVariables.Rebooting ? 1 : 0);
 }
