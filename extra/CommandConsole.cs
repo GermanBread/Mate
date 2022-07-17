@@ -18,11 +18,11 @@ namespace Mate.Extra
 {
     public class CommandConsole
     {
-        public CancellationTokenSource ctx { get; private set; }
-        public List<MethodInfo> consoleCommands { get; private set; }
+        private CancellationTokenSource ctx;
+        private List<MethodInfo> consoleCommands;
         private readonly List<string> commandHistory = new();
         private int commandIndex = -1;
-        public bool isAlive = false;
+        public bool IsAlive { get; private set; } = false;
         
         /// <summary>
         /// Initializes the console for user input.
@@ -36,9 +36,9 @@ namespace Mate.Extra
         /// <summary>
         /// Uses the list provided in the GlobalVariables class to filter inbuilt methods
         /// </summary>
-        private static List<MethodInfo> GetStaticMethodsByBlacklist(Type reflectedType)
-         => reflectedType.GetMethods().Where(method
-             => !GlobalVariables.GenericMethodNames.Contains(method.Name) & method.IsStatic).ToList();
+        private static List<MethodInfo> GetStaticMethodsByBlacklist(Type reflectedType) => 
+            reflectedType.GetMethods().Where(method => 
+                !GlobalVariables.GenericMethodNames.Contains(method.Name) & method.IsStatic).ToList();
 
         /// <summary>
         /// Starts the console service. DO NOT AWAIT
@@ -51,7 +51,7 @@ namespace Mate.Extra
             // Get a new token source, because this console can be restarted
             ctx = new CancellationTokenSource();
             
-            isAlive = true;
+            IsAlive = true;
 
             // Only allow errors
             if (Logger.MinimumPriority == 99) Logger.MinimumPriority = 1;
@@ -128,7 +128,7 @@ namespace Mate.Extra
 
             "# ".Write(ConsoleColor.Red);
             input.Write(consoleCommands.Any(command
-                => command.Name.ToLower() == input.ToLower()) ? ConsoleColor.White : ConsoleColor.DarkGray);
+                => command.Name.ToLower() == input.ToLower()) ? ConsoleColor.White : ConsoleColor.Red);
             new string(' ', Console.WindowWidth - input.Length - leftMargin).WriteLine();
             
             Console.CursorTop--;
@@ -209,7 +209,7 @@ namespace Mate.Extra
             // Check if the console has been instantiated
             if (ctx != null) ctx.Cancel();
 
-            isAlive = false;
+            IsAlive = false;
 
             Logger.Log(new LogMessage(LogSeverity.Info, "Console", "Press CONTROL + E to start a new console session"));
             

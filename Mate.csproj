@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <DebugType>embedded</DebugType>
     <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>true</PublishTrimmed>

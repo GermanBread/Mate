@@ -1,3 +1,4 @@
+using System.Net;
 // System
 using System;
 using System.Linq;
@@ -36,13 +37,32 @@ namespace Mate.Core
         void Init() {
             Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Initializing commands"));
             InitCommands().Wait();
-            Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Starting Webserver"));
+
+            // This blocked startup, so I decided to create a task for it. Horrible code if this were written in C/C++
+            Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Starting commandline"));
+            console = new CommandConsole(typeof(ConsoleCommands));
+            Task.Run(() => {
+                while (true)
+                {
+                    // Check if a console session already exists
+                    if (!console.IsAlive) {
+                        ConsoleKeyInfo key = Console.ReadKey();
+                        // Check for the key combination
+                        if (key.Modifiers == ConsoleModifiers.Control & key.Key == ConsoleKey.E)
+                            // Run asyncronously
+                            _ = console.Start();
+                    }
+                }
+            });
             
-            server = new Webserver(new string[] {
-                "localhost"
-            }, 8080);
-            // *ahem* Because this was blocking the main thread from starting, the GC should take care of that eventually...
-            Task.Run(() => server.StartAsync());
+            if (!Environment.CommandLine.Contains("--disable-http-server")) {
+                Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Starting Webserver"));
+                server = new Webserver(new string[] {
+                    "localhost"
+                }, 8080);
+                // *ahem* Because this was blocking the main thread from starting, the GC should take care of that eventually...
+                Task.Run(() => server.StartAsync());
+            }
 
             Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Subscribing events"));
             Client.JoinedGuild += HandleGuildJoin;
@@ -56,37 +76,26 @@ namespace Mate.Core
             statusUpdaterToken = statusUpdater.Token;
             _ = UpdateStatus();
 
-            // This blocked startup, so I decided to create a task for it. Horrible code if this were written in C/C++
-            console = new CommandConsole(typeof(ConsoleCommands));
-            Task.Run(() => {
-                while (true)
-                {
-                    // Check if a console session already exists
-                    if (!console.isAlive) {
-                        ConsoleKeyInfo key = Console.ReadKey();
-                        // Check for the key combination
-                        if (key.Modifiers == ConsoleModifiers.Control & key.Key == ConsoleKey.E)
-                            // Run asyncronously
-                            _ = console.Start();
-                    }
-                }
-            });
-
             // Start a task that restarts the bot (prevents OOM)
-            Task.Run(() => {
-                Thread.Sleep(TimeSpan.FromDays(1));
-                _ = Reboot();
-            });
+            if (!Environment.GetCommandLineArgs().Contains("--noreboot")) {
+                Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Starting daily reboot task"));
+                Task.Run(() => {
+                    Thread.Sleep(TimeSpan.FromDays(1));
+                    _ = Reboot();
+                });
+            } else Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Daily rebooting disabled via commandline switch '--noreboot'"));
         }
         void Stop() {
             Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Unsubscribing events"));
             Client.JoinedGuild -= HandleGuildJoin;
             Client.MessageReceived -= HandleCommands;
             
-            Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Stopping webserver"));
-            server.StopAsync().Wait();
+            if (!Environment.CommandLine.Contains("--disable-http-server")) {
+                Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Stopping webserver"));
+                server?.StopAsync().Wait();
+            }
             
-            Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Stopping webserver"));
+            Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Stopping console"));
             console.Close();
 
             Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Stopping status task"));

@@ -29,6 +29,7 @@ namespace Mate.Core
         // We assume that the child classes will contain a "Run" and "Stop" method
         private readonly MethodBase[] ChildMethods = typeof(Bot).GetRuntimeMethods().ToArray();
         private bool IsMakingBackup = false;
+        private bool shutdownTriggered = false;
         
         /// <summary>
         /// Starts the bot.
@@ -123,7 +124,6 @@ namespace Mate.Core
             await Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Logging out"));
             await Client.StopAsync();
             await Client.LogoutAsync();
-            //Client.Dispose();
 
             await Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Unsubscribing logs"));
             Client.Log -= Logger.Log;
@@ -163,11 +163,14 @@ namespace Mate.Core
             BackupCancelToken = BotCancelTokenSource.Token;
 
             // Subscribe a cancel handler
-            Console.CancelKeyPress += (object _, ConsoleCancelEventArgs args) => {
+            Console.CancelKeyPress += (_, args) => {
                 Logger.Log(new LogMessage(LogSeverity.Info, "Console", "ControlC was recieved"));
                 args.Cancel = true;
-                if(!GlobalVariables.ShuttingDown) _ = Quit(); // We want a clean shutdown
+                if(!shutdownTriggered) _ = Quit(); // We want a clean shutdown
                 else BotCancelTokenSource.Cancel(); // If ControlC is pressed again while shutting down, kill the main thread
+                
+                // Set this at the end else the if statement is useless
+                shutdownTriggered = true;
             };
             
             Client = new DiscordSocketClient(new DiscordSocketConfig {

@@ -18,8 +18,17 @@ using Mate.Variables;
 
     string[] bootParameters = args;
 
+    if (bootParameters.Contains("-h") || bootParameters.Contains("--help")) {
+        "Quick rundown of command-line switches:".WriteLine(ConsoleColor.Cyan);
+        "-h | --help\t\t= the thing you are seeing right now".WriteLine(ConsoleColor.Green);
+        "--helper-script\t\t= used by the helper script, prevent the bot from doing the reboot by itself".WriteLine(ConsoleColor.Green);
+        "--noreboot\t\t= disables automatic daily rebooting".WriteLine(ConsoleColor.Green);
+        "--disable-http-server\t= disable the HTTP server".WriteLine(ConsoleColor.Green);
+        return;
+    }
+
     // Splash
-    "Discord bot-init by ".Write(ConsoleColor.DarkCyan);
+    "Discord bot by ".Write(ConsoleColor.DarkCyan);
     "GermanBread#9077".WriteLine(ConsoleColor.Cyan);
 
     string bitVersionString = Environment.Is64BitOperatingSystem ? "64-bit" : "32-bit";
@@ -41,6 +50,12 @@ using Mate.Variables;
         $"{osVersionString}".WriteLine(ConsoleColor.Green);
     } else {
         Environment.OSVersion.WriteLine(ConsoleColor.White);
+    }
+
+    if (bootParameters.Contains("--helper-script")) {
+        "Notice: Rebooting is handled by a shell script, as indicated by the ".Write(ConsoleColor.Blue);
+        "--helper-script".Write(ConsoleColor.Cyan);
+        " switch".WriteLine(ConsoleColor.Blue);
     }
 
     if (bootParameters.Contains("m")) "<<< Booting maintenance mode >>>".WriteLine(ConsoleColor.Yellow);
@@ -68,11 +83,10 @@ using Mate.Variables;
         // Start the bot
         await GlobalVariables.DiscordBot.Start();
 
-        // Done by using a shell script
-        /*if (GlobalVariables.Rebooting) {
+        if (GlobalVariables.Rebooting && !bootParameters.Contains("--helper-script")) {
             await Logger.Log(new LogMessage(LogSeverity.Info, "Reboot", $"Handing off control to new instance"));
             System.Diagnostics.Process.Start(Path.Combine(AppContext.BaseDirectory, "Mate"));
-        }*/
+        }
     }
     catch (Exception ex) {
         await Logger.Log(new LogMessage(LogSeverity.Critical, "Crash", "The bot crashed!", ex));
@@ -80,7 +94,6 @@ using Mate.Variables;
 
     createLog();
 
-    // Methods
     void initDataDirectory() {
         Directory.CreateDirectory(GlobalVariables.GuildProfilesPath);
         Directory.CreateDirectory(GlobalVariables.BaseLogPath);
@@ -101,5 +114,5 @@ using Mate.Variables;
         Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", $"Log saved"));
     }
 
-    Environment.Exit(GlobalVariables.Rebooting ? 1 : 0);
+    Environment.Exit(GlobalVariables.Rebooting && bootParameters.Contains("--helper-script") ? 2 : 0);
 }
