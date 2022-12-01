@@ -6,12 +6,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <DebugType>embedded</DebugType>
     <PublishSingleFile>true</PublishSingleFile>
-    <PublishTrimmed>true</PublishTrimmed>
+    <!-- <PublishTrimmed>true</PublishTrimmed> -->
     <SelfContained>true</SelfContained>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CliWrap" Version="3.5.0" />
     <PackageReference Include="Discord.Net" Version="2.4.0" />
   </ItemGroup>
 

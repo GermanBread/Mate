@@ -11,6 +11,9 @@ using Discord;
 using Mate.Utility;
 using Mate.Variables;
 
+// CliWrap
+using CliWrap;
+
 // Begin scope
 {
     // Start the stopwatch
@@ -21,7 +24,6 @@ using Mate.Variables;
     if (bootParameters.Contains("-h") || bootParameters.Contains("--help")) {
         "Quick rundown of command-line switches:".WriteLine(ConsoleColor.Cyan);
         "-h | --help\t\t= the thing you are seeing right now".WriteLine(ConsoleColor.Green);
-        "--helper-script\t\t= used by the helper script, prevent the bot from doing the reboot by itself".WriteLine(ConsoleColor.Green);
         "--noreboot\t\t= disables automatic daily rebooting".WriteLine(ConsoleColor.Green);
         "--disable-http-server\t= disable the HTTP server".WriteLine(ConsoleColor.Green);
         return;
@@ -83,13 +85,11 @@ using Mate.Variables;
         // Start the bot
         await GlobalVariables.DiscordBot.Start();
 
-        if (GlobalVariables.Rebooting && !bootParameters.Contains("--helper-script")) {
-            await Logger.Log(new LogMessage(LogSeverity.Info, "Reboot", $"Handing off control to new instance"));
-            System.Diagnostics.Process.Start(Path.Combine(AppContext.BaseDirectory, "Mate"));
-        }
+        if (GlobalVariables.Rebooting) "<<< Rebooting bot via script >>>".WriteLine(ConsoleColor.Green);
     }
     catch (Exception ex) {
         await Logger.Log(new LogMessage(LogSeverity.Critical, "Crash", "The bot crashed!", ex));
+        Environment.Exit(1);
     }
 
     createLog();
@@ -111,8 +111,8 @@ using Mate.Variables;
         _logwriter.Close(); // Write buffer to disk
         _logwriter.Dispose(); // Free up memory
 
-        Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", $"Log saved"));
+        Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Log saved"));
     }
 
-    Environment.Exit(GlobalVariables.Rebooting && bootParameters.Contains("--helper-script") ? 2 : 0);
+    Environment.Exit(GlobalVariables.Rebooting ? 2 : 0);
 }

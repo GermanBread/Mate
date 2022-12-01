@@ -30,28 +30,28 @@ namespace Mate.Core
         private readonly MethodBase[] ChildMethods = typeof(Bot).GetRuntimeMethods().ToArray();
         private bool IsMakingBackup = false;
         private bool shutdownTriggered = false;
-        
+
         /// <summary>
         /// Starts the bot.
         /// </summary>
-        public async Task Start() {           
-            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", $"Initializing variables"));
+        public async Task Start() {
+            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Initializing variables"));
             await InitVariables();
 
-            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", $"Subscribing logs"));
+            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Subscribing logs"));
             Client.Log += Logger.Log;
             Command.Log += Logger.Log;
 
-            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", $"Loading guild profiles"));
+            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Loading guild profiles"));
             await GuildProfileManager.LoadGuildProfiles();
             if (GuildProfileManager.GuildProfiles.Count == 1) await Logger.Log(new LogMessage(LogSeverity.Info, "Profile manager", $"Loaded one guild profile"));
             else await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", $"Loaded {GuildProfileManager.GuildProfiles.Count} guild profiles"));
 
-            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", $"Logging in"));
+            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Logging in"));
             await Client.LoginAsync(TokenType.Bot, File.ReadAllText(GlobalVariables.TokenPath).Trim()); // using Trim() is useful if you use text editors that like to append empty lines (looking at you, Kate)
             await Client.StartAsync();
 
-            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", $"Downloading memberlists"));
+            await Logger.Log(new LogMessage(LogSeverity.Info, "Startup", "Downloading memberlists"));
             await Client.DownloadUsersAsync(Client.Guilds);
 
             await InvokeChildMethod("Init");
@@ -71,7 +71,7 @@ namespace Mate.Core
 
                 Logger.Log(new LogMessage(LogSeverity.Info, "Login event", $"Stopping watchdog"));
                 _cts.Cancel();
-                
+
                 Logger.Log(new LogMessage(LogSeverity.Info, "Login event", $"Starting backup task"));
                 _ = PeriodicBackupTask(2);
 
@@ -80,10 +80,10 @@ namespace Mate.Core
 
                 GlobalVariables.StartupTime = GlobalVariables.Uptime; // Set the startup time
                 $"<<< Startup completed in {GlobalVariables.StartupTime} milliseconds >>>".WriteLine(ConsoleColor.Green);
-                
+
                 return Task.CompletedTask;
             };
-            
+
             // Code resposible for keeping the bot alive
             try {
                 await Task.Delay(-1, BotCancelToken);
@@ -108,19 +108,19 @@ namespace Mate.Core
         public async Task Quit() {
             // Reset the filter
             Logger.MinimumPriority = 99;
-            
+
             GlobalVariables.ShuttingDown = true;
 
             "<<< Shutting down >>>".WriteLine(ConsoleColor.Red);
-            
+
             if (IsMakingBackup) await Logger.Log(new LogMessage(LogSeverity.Warning, "Shutdown", "A backup task is currently running, waiting for it to finish. Press Control + C again to abort"));
             while (IsMakingBackup);
-            
+
             GlobalVariables.ShutdownTime = GlobalVariables.Uptime; // A hack, but it works
 
             await Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Stopping backup task"));
             BackupCancelTokenSource.Cancel();
-            
+
             await Logger.Log(new LogMessage(LogSeverity.Info, "Shutdown", "Logging out"));
             await Client.StopAsync();
             await Client.LogoutAsync();
@@ -146,19 +146,19 @@ namespace Mate.Core
         /// </summary>
         public async Task Abort() {
             Logger.MinimumPriority = 99;
-            
+
             GlobalVariables.ShuttingDown = true;
-            
+
             "<<< Aborting operation >>>".WriteLine(ConsoleColor.Red);
-            
+
             await Logger.Log(new LogMessage(LogSeverity.Info, "Abort", "Stopping main thread"));
             BotCancelTokenSource.Cancel();
         }
-        
+
         private async Task InitVariables() {
             // Extract the token
             BotCancelToken = BotCancelTokenSource.Token;
-            
+
             // Extract the token
             BackupCancelToken = BotCancelTokenSource.Token;
 
@@ -168,16 +168,16 @@ namespace Mate.Core
                 args.Cancel = true;
                 if(!shutdownTriggered) _ = Quit(); // We want a clean shutdown
                 else BotCancelTokenSource.Cancel(); // If ControlC is pressed again while shutting down, kill the main thread
-                
+
                 // Set this at the end else the if statement is useless
                 shutdownTriggered = true;
             };
-            
+
             Client = new DiscordSocketClient(new DiscordSocketConfig {
                 LogLevel = LogSeverity.Info,
                 ExclusiveBulkDelete = false // To get rid of that warning
             });
-            
+
             Command = new CommandService(new CommandServiceConfig
             {
                 LogLevel = LogSeverity.Info,

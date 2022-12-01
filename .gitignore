@@ -4,6 +4,7 @@ build/
 obj/
 data/*
 assets/*
+pkgs/
 
 # This one contains some commands I'd rather not share with the world...
 # Don't worry! It's just one file and the bot will still compile!
